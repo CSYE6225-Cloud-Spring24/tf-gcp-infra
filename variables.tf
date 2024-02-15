@@ -13,36 +13,26 @@ variable "zone" {
   type        = string
 }
 
-variable "vpc_name" {
-  description = "The name of the VPC"
-  type        = string
+variable "vpcs" {
+  description = "A list of objects representing VPC configurations"
+  type = list(object({
+    name = string
+    # description = "The name of the VPC"
+    vpc_name = string
+    # description = "The name of web subnet"
+    websubnet_name = string
+    # description = "The name of db subnet"
+    dbsubnet_name = string
+    # description = "CIDR for the webapp subnet"
+    webapp_subnet_cidr = string
+    # description = "CIDR for the db subnet"
+    db_subnet_cidr = string
+    # description = "CIDR for the webapp subnet route"
+    websubnetroutename = string
+    # description = "To set private ip google access of subnets to on or off"
+    privateipgoogleaccess = bool
+  }))
 }
-
-variable "websubnet_name" {
-  description = "The name of the web subnet"
-  type        = string
-}
-
-variable "dbsubnet_name" {
-  description = "The name of the db subne"
-  type        = string
-}
-
-variable "websubnetroutename" {
-  description = "Route name of the webapp subnet"
-  type        = string
-}
-
-variable "webapp_subnet_cidr" {
-  description = "CIDR for the webapp subnet"
-  type        = string
-}
-
-variable "db_subnet_cidr" {
-  description = "CIDR for the db subnet"
-  type        = string
-}
-
 variable "webapp_subnetroute_cidr" {
   description = "CIDR for the webapp subnet route"
   type        = string
@@ -61,11 +51,6 @@ variable "deletedefaultroutes" {
 variable "routingmode" {
   description = "To set routing mode"
   type        = string
-}
-
-variable "privateipgoogleaccess" {
-  description = "To set private ip google access of subnets to on or off"
-  type        = bool
 }
 
 variable "nexthopgateway" {
