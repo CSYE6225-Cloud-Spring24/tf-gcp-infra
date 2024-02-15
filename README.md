@@ -32,13 +32,13 @@ Before you begin, ensure you have the following installed:
 2. Run the below terraform commands in the terminal
    
 ## Commands to run Terraform:
-> gcloud auth application-default login
-> terraform init
-> terraform init -upgrade
-> terraform fmt
-> terraform validate
-> terraform plan
-> terraform apply
+1. gcloud auth application-default login
+2. terraform init
+3. terraform init -upgrade
+4. terraform fmt
+5. terraform validate
+6. terraform plan
+7. terraform apply
 
 ### Other commands:
 1. To clean up the resources created by Terraform, you can run:
