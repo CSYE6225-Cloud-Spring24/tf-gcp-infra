@@ -17,11 +17,15 @@ jobs:
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
-      with:
-          terraform_version: 4.51.0
 
     - name: Terraform Init
       run: |
            terraform init
            terraform init -upgrade
+    
+    - name: Terraform Format
+      run: terraform fmt 
+    
+    - name: Terraform Validate
+      run: terraform validate
 
