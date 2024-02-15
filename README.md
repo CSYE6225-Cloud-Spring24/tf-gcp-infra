@@ -2,8 +2,14 @@
 
 # Google Cloud 
 
-## Project Description:
-This project automates the creation of a Virtual Private Cloud (VPC) network and two subnets (one for a web application and one for a database) in Google Cloud Platform using Terraform.
+## Project Description
+The project uses Terraform to define the infrastructure as code (IaC) for provisioning Virtual Private Cloud (VPC) networks and subnets in Google Cloud Platform. It allows for the creation of multiple VPCs and associated subnets, enabling the segregation of resources based on different use cases or environments.
+
+## Features
+1. Automated creation of VPC networks and subnets
+2. Support for creating multiple VPCs in parallel
+3. Configuration of routing and other network settings
+4. Infrastructure as code for reproducibility and version control
 
 ## Prerequisites
 Before you begin, ensure you have the following installed:
