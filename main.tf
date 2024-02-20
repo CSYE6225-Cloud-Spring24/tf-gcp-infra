@@ -11,7 +11,6 @@ provider "google" {
   project = var.project_id
   region  = var.region
   zone    = var.region
-  x=
 }
 resource "google_compute_network" "vpc_network" {
   count                           = length(var.vpcs)
