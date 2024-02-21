@@ -6,6 +6,13 @@ autocreatesubnets       = false
 deletedefaultroutes     = true
 routingmode             = "REGIONAL"
 nexthopgateway          = "default-internet-gateway"
+vm_name                 = "virtual-machine"
+vm_machine_type         = "e2-medium"
+vm_image                = "centos-image1"
+vm_disk_type            = "pd-balanced"
+vm_disk_size_gb         = 100
+app_port                = "8080"
+
 vpcs = [
   {
     name                  = "vpc1"
@@ -15,16 +22,6 @@ vpcs = [
     webapp_subnet_cidr    = "10.0.1.0/24"
     db_subnet_cidr        = "10.0.2.0/24"
     websubnetroutename    = "webapp-route"
-    privateipgoogleaccess = true
-  },
-  {
-    name                  = "vpc2"
-    vpc_name              = "vpc2"
-    websubnet_name        = "webapp1"
-    dbsubnet_name         = "db1"
-    webapp_subnet_cidr    = "10.0.3.0/24"
-    db_subnet_cidr        = "10.0.4.0/24"
-    websubnetroutename    = "webapp1-route"
     privateipgoogleaccess = true
   }
 ]
