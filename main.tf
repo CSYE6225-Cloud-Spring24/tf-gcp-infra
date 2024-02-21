@@ -50,7 +50,7 @@ resource "google_compute_route" "webapp_route" {
 
 resource "google_compute_firewall" "allowtraffic_applicationport" {
   count   = length(var.vpcs)
-  name    = "allow-traffic-application-port-${count.index}"
+  name    = "allow-traffic-application-port-${count.index}" 
   network = google_compute_network.vpc_network[count.index].name
 
   allow {
@@ -95,10 +95,7 @@ resource "google_compute_instance" "vm_instance" {
     subnetwork = google_compute_subnetwork.webapp[count.index].name
 
     access_config {
-
+      
     }
   }
 }
-
-
-
