@@ -95,7 +95,7 @@ resource "google_compute_instance" "vm_instance" {
     subnetwork = google_compute_subnetwork.webapp[count.index].name
 
     access_config {
-      
+
     }
   }
 }
