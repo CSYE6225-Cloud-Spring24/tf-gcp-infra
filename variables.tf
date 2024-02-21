@@ -57,3 +57,33 @@ variable "nexthopgateway" {
   description = "To set next hop gateway value"
   type        = string
 }
+
+variable "vm_name" {
+  description = "Name of the VM"
+  type        = string
+}
+
+variable "vm_machine_type" {
+  description = "Machine type of the VM"
+  type        = string
+}
+
+variable "vm_image" {
+  description = "Custom image of the VM boot disk"
+  type        = string
+}
+
+variable "vm_disk_type" {
+  description = "Disk type of the VM boot disk"
+  type        = string
+}
+
+variable "vm_disk_size_gb" {
+  description = "Size of the VM boot disk in GB"
+  type        = number
+}
+
+variable "app_port" {
+  description = "The application port to allow through the firewall"
+  type        = string
+}
