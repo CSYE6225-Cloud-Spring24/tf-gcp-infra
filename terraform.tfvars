@@ -12,7 +12,6 @@ vm_image                = "packer-custom-centos8-image"
 vm_disk_type            = "pd-balanced"
 vm_disk_size_gb         = 100
 app_port                = "8080"
-
 vpcs = [
   {
     name                  = "vpc1"
@@ -25,3 +24,34 @@ vpcs = [
     privateipgoogleaccess = true
   }
 ]
+deletion_protection       = false
+availability_type         = "REGIONAL"
+disk_type                 = "pd-ssd"
+disk_size                 = 100
+ipv4_enabled              = false
+vm_tag                    = ["web", "sql"]
+DB_USER                   = "webapp"
+DB_NAME                   = "webapp"
+sql_access                = "allow-sql-access"
+web_access                = "allow-web-access-to-sql"
+password_length           = 16
+password_special          = true
+password_override         = "!#$%&*()-_=+[]{}<>:?"
+password_sensitive        = true
+backup_enabled            = true
+backup_binary_log_enabled = true
+protocol                  = "tcp"
+sql_port                  = 3306
+sql_tier                  = "db-custom-2-3840"
+DB_version                = "MYSQL_5_7"
+DB_Name_bytelength        = 4
+vpc_service               = "servicenetworking.googleapis.com"
+private_ipname            = "private-ip-address"
+privateip_purpose         = "VPC_PEERING"
+privateip_addresstype     = "INTERNAL"
+privateip_prefixlength    = 16
+ssh_port                  = "22"
+source_range              = "0.0.0.0/0"
+allow_traffic             = "allow-traffic-application-port"
+deny_traffic              = "deny-traffic-ssh-port"
+privateinstance_name      = "private-instance"
