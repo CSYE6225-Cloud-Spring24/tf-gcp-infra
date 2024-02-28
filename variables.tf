@@ -87,3 +87,152 @@ variable "app_port" {
   description = "The application port to allow through the firewall"
   type        = string
 }
+
+variable "deletion_protection" {
+  description = "Value for deletion protection"
+  type        = bool
+}
+
+variable "availability_type" {
+  description = "Value for availability type"
+  type        = string
+}
+
+variable "disk_type" {
+  description = "Value for disk type"
+  type        = string
+}
+
+variable "disk_size" {
+  description = "Value for disk size"
+  type        = number
+}
+
+variable "ipv4_enabled" {
+  description = "Value for IPv4 enabled"
+  type        = bool
+}
+
+variable "vm_tag" {
+  description = "Tags to apply to Compute Engine instances"
+  type        = list(string)
+}
+
+variable "DB_NAME" {
+  description = "Name of the database"
+  type        = string
+}
+variable "DB_USER" {
+  description = "Name of the database user"
+  type        = string
+}
+variable "sql_access" {
+  description = "Name of the sql access firewall"
+  type        = string
+}
+variable "web_access" {
+  description = "Name of the web access to sql firewall"
+  type        = string
+}
+variable "password_length" {
+  description = "Length of DB password"
+  type        = number
+}
+variable "password_special" {
+  description = "Allow special characters in password"
+  type        = bool
+}
+variable "password_override" {
+  description = "Override special characters in password"
+  type        = string
+}
+
+variable "password_sensitive" {
+  description = "Hides password"
+  type        = bool
+}
+
+variable "backup_enabled" {
+  description = "To enable backup"
+  type        = bool
+}
+variable "backup_binary_log_enabled" {
+  description = "To enable binary log"
+  type        = bool
+}
+
+variable "protocol" {
+  description = "Type of protocol"
+  type        = string
+}
+
+variable "sql_port" {
+  description = "Port number of sql"
+  type        = number
+}
+
+variable "sql_tier" {
+  description = "Tier of the cloudsql instance"
+  type        = string
+}
+
+variable "DB_version" {
+  description = "Database Version"
+  type        = string
+}
+
+variable "DB_Name_bytelength" {
+  description = "Bytelength of DB name"
+  type        = number
+}
+
+variable "vpc_service" {
+  description = "Private connection service"
+  type        = string
+}
+
+variable "private_ipname" {
+  description = "Name of the Private IP Address"
+  type        = string
+}
+
+variable "privateip_purpose" {
+  description = "Purpose of the Private IP Address"
+  type        = string
+}
+
+variable "privateip_addresstype" {
+  description = "Address Type of the Private IP"
+  type        = string
+}
+
+variable "privateip_prefixlength" {
+  description = "Prefix Length of the Private IP"
+  type        = number
+}
+
+variable "ssh_port" {
+  description = "ssh port number"
+  type        = string
+}
+
+variable "source_range" {
+  description = "source range"
+  type        = string
+}
+
+variable "allow_traffic" {
+  description = "Allow traffic on application port"
+  type        = string
+}
+
+variable "deny_traffic" {
+  description = "Deny traffic on ssh port"
+  type        = string
+}
+
+variable "privateinstance_name" {
+  description = "Name of the private instance"
+  type        = string
+}
+
