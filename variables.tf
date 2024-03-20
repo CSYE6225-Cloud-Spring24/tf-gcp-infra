@@ -236,3 +236,27 @@ variable "privateinstance_name" {
   type        = string
 }
 
+variable "dnsname" {
+  description = "Name of the Domain"
+  type        = string
+}
+
+variable "dnsrecord" {
+  description = "Name of the DNS Record"
+  type        = string
+}
+
+variable "dnsttl" {
+  description = "Time to live"
+  type        = number
+}
+
+variable "serviceaccountid" {
+  description = "Service Account ID"
+  type        = string
+}
+
+variable "serviceaccountname" {
+  description = "Service Account Name"
+  type        = string
+}
