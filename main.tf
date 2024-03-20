@@ -110,6 +110,12 @@ echo "spring.jpa.properties.hibernate.show_sql=true" >> /tmp/application.propert
 echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect" >> /tmp/application.properties
 echo "spring.jpa.hibernate.ddl-auto=update" >> /tmp/application.properties
 EOT
+
+  service_account {
+    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
+    email  = google_service_account.service_account.email
+    scopes = ["cloud-platform"]
+  }
 }
 
 resource "google_compute_global_address" "private_ip_address" {
@@ -139,7 +145,7 @@ resource "google_sql_database_instance" "instance" {
   deletion_protection = var.deletion_protection
   depends_on          = [google_service_networking_connection.private_vpc_connection]
   settings {
-    tier    = var.sql_tier
+    tier              = var.sql_tier
     availability_type = var.availability_type
     disk_type         = var.disk_type
     disk_size         = var.disk_size
@@ -199,7 +205,38 @@ output "private_ip" {
   value = google_sql_database_instance.instance.private_ip_address
 }
 
+data "google_dns_managed_zone" "my_dns_zone" {
+  name = var.dnsname
+}
 
+# Define the DNS record for your VM instance
+resource "google_dns_record_set" "my_dns_record" {
+  name         = data.google_dns_managed_zone.my_dns_zone.dns_name
+  type         = var.dnsrecord
+  ttl          = var.dnsttl
+  managed_zone = data.google_dns_managed_zone.my_dns_zone.name
+  rrdatas      = [google_compute_instance.vm_instance[0].network_interface[0].access_config[0].nat_ip]
+}
 
+resource "google_service_account" "service_account" {
+  account_id   = var.serviceaccountid
+  display_name = var.serviceaccountname
+}
 
+resource "google_project_iam_binding" "logging_admin" {
+  project = var.project_id
+  role    = "roles/logging.admin"
 
+  members = [
+    "serviceAccount:${google_service_account.service_account.email}"
+  ]
+}
+
+resource "google_project_iam_binding" "monitoring_metric_writer" {
+  project = var.project_id
+  role    = "roles/monitoring.metricWriter"
+
+  members = [
+    "serviceAccount:${google_service_account.service_account.email}"
+  ]
+}
