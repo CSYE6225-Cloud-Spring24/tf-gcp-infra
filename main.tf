@@ -109,6 +109,8 @@ echo "spring.datasource.password=${random_password.password.result}" >> /tmp/app
 echo "spring.jpa.properties.hibernate.show_sql=true" >> /tmp/application.properties
 echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect" >> /tmp/application.properties
 echo "spring.jpa.hibernate.ddl-auto=update" >> /tmp/application.properties
+echo "projectId=${var.project_id}" >> /tmp/application.properties
+echo "topicId=${google_pubsub_topic.pub_sub_topic.name}" >> /tmp/application.properties
 EOT
 
   service_account {
@@ -239,4 +241,116 @@ resource "google_project_iam_binding" "monitoring_metric_writer" {
   members = [
     "serviceAccount:${google_service_account.service_account.email}"
   ]
+}
+
+resource "google_pubsub_topic" "pub_sub_topic" {
+  name                       = var.pubsubtopic_name
+  message_retention_duration = var.pubsubtopic_message_retention_duration
+  depends_on                 = [google_service_networking_connection.private_vpc_connection]
+}
+
+resource "google_pubsub_subscription" "pub_sub_subscription" {
+  name                 = var.pubsub_subscription_name
+  topic                = google_pubsub_topic.pub_sub_topic.name
+  ack_deadline_seconds = var.ack_deadline_seconds
+  expiration_policy {
+    ttl = var.ttl
+  }
+}
+
+resource "google_service_account" "function_service_account" {
+  account_id   = var.cloudfunction_account_id
+  display_name = var.cloudfunction_display_name
+}
+
+resource "google_project_iam_binding" "function_service_account_roles" {
+  project = var.project_id
+  role    = "roles/iam.serviceAccountTokenCreator"
+
+  members = [
+    "serviceAccount:${google_service_account.function_service_account.email}"
+  ]
+}
+
+resource "google_storage_bucket" "function_code_bucket" {
+  name     = var.cloudstorage_bucketname
+  location = var.region
+}
+
+resource "google_storage_bucket_object" "function_code_objects" {
+  name   = var.cloudstorage_bucketobjectname
+  bucket = google_storage_bucket.function_code_bucket.name
+  source = var.cloudstorage_source
+}
+
+resource "google_cloudfunctions2_function" "email_verification_function" {
+  name     = var.cloudfunction_name
+  location = var.region
+
+  build_config {
+    runtime     = var.cloudfunction_runtime
+    entry_point = var.cloudfunction_entry_point
+
+    source {
+      storage_source {
+        bucket = google_storage_bucket.function_code_bucket.name
+        object = google_storage_bucket_object.function_code_objects.name
+      }
+    }
+  }
+
+  service_config {
+    max_instance_count            = var.max_instance_count
+    min_instance_count            = var.min_instance_count
+    available_memory              = var.available_memory
+    timeout_seconds               = var.timeout_seconds
+    vpc_connector                 = google_vpc_access_connector.connector.name
+    vpc_connector_egress_settings = var.vpc_connector_egress_settings
+
+    environment_variables = {
+      SQL_HOST           = google_sql_database_instance.instance.private_ip_address
+      SQL_USERNAME       = var.DB_USER
+      SQL_PASSWORD       = random_password.password.result
+      webappSQL_DATABASE = var.DB_NAME
+      MAILGUN_apiKey     = var.MAILGUN_apiKey
+      MAILGUN_domain     = var.MAILGUN_domain
+    }
+
+    ingress_settings               = var.cloudfunction_ingress_settings
+    all_traffic_on_latest_revision = var.cloudfunction_all_traffic_on_latest_revision
+    service_account_email          = google_service_account.function_service_account.email
+
+
+  }
+  event_trigger {
+    trigger_region = var.region
+    event_type     = "google.cloud.pubsub.topic.v1.messagePublished"
+    pubsub_topic   = google_pubsub_topic.pub_sub_topic.id
+    retry_policy   = var.eventtrigger_retry_policy
+  }
+}
+
+resource "google_project_iam_binding" "pubsub_publisher" {
+  project = var.project_id
+  role    = "roles/pubsub.publisher"
+
+  members = [
+    "serviceAccount:${google_service_account.service_account.email}"
+  ]
+}
+
+resource "google_project_iam_binding" "pubsub_service_account_roles" {
+  project = var.project_id
+  role    = "roles/iam.serviceAccountTokenCreator"
+
+  members = [
+    "serviceAccount:${google_service_account.service_account.email}"
+  ]
+}
+
+resource "google_vpc_access_connector" "connector" {
+  name          = var.vpcconnector_name
+  region        = var.region
+  ip_cidr_range = var.vpcconnector_ip_cidr_range
+  network       = google_compute_network.vpc_network[0].name
 }
