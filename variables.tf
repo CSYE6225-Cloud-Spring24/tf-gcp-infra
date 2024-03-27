@@ -260,3 +260,120 @@ variable "serviceaccountname" {
   description = "Service Account Name"
   type        = string
 }
+
+variable "pubsubtopic_name" {
+  description = "Pub/Sub Topic Name"
+  type        = string
+}
+
+variable "pubsubtopic_message_retention_duration" {
+  description = "Pub/Sub Message Retention Duration"
+  type        = string
+}
+
+variable "pubsub_subscription_name" {
+  description = "Pub/Sub Subscription Name"
+  type        = string
+}
+
+variable "ack_deadline_seconds" {
+  description = "Ack Deadline Seconds"
+  type        = number
+}
+variable "ttl" {
+  description = "Pub/Sub TTL"
+  type        = string
+}
+variable "cloudfunction_account_id" {
+  description = "The account id of Cloud Function"
+  type        = string
+}
+variable "cloudfunction_display_name" {
+  description = "The display Name of Cloud Function"
+  type        = string
+}
+variable "cloudstorage_bucketname" {
+  description = "Cloud Storage Bucket Name"
+  type        = string
+}
+
+variable "cloudstorage_bucketobjectname" {
+  description = "Name of cloud storage bucket object"
+  type        = string
+}
+variable "cloudstorage_source" {
+  description = "Zip folder Source Name of cloud storage"
+  type        = string
+}
+
+variable "cloudfunction_name" {
+  description = "Name of the cloud function"
+  type        = string
+}
+variable "cloudfunction_runtime" {
+  description = "Cloud Function Runtime"
+  type        = string
+}
+variable "cloudfunction_entry_point" {
+  description = "Cloud Function Entry point"
+  type        = string
+}
+
+variable "cloudfunction_available_memory_mb" {
+  description = "Cloud Function Available memory"
+  type        = number
+}
+
+variable "vpcconnector_name" {
+  description = "VPC Connector name"
+  type        = string
+}
+variable "vpcconnector_ip_cidr_range" {
+  description = "VPC connector ip cidr"
+  type        = string
+}
+
+variable "eventtrigger_retry_policy" {
+  description = "Event trigger retry policy"
+  type        = string
+}
+
+variable "cloudfunction_ingress_settings" {
+  description = "Cloud Function Ingress settings"
+  type        = string
+}
+
+variable "cloudfunction_all_traffic_on_latest_revision" {
+  description = "Cloud Function All traffic"
+  type        = bool
+}
+
+variable "vpc_connector_egress_settings" {
+  description = "VPC connector egress settings"
+  type        = string
+}
+variable "max_instance_count" {
+  description = "Max instance count"
+  type        = number
+}
+variable "min_instance_count" {
+  description = "Min instance count"
+  type        = number
+}
+variable "available_memory" {
+  description = "Cloud Function Available memory"
+  type        = string
+}
+variable "timeout_seconds" {
+  description = "Cloud Function timeout_seconds"
+  type        = number
+}
+
+variable "MAILGUN_apiKey" {
+  description = "Mailgun API Key"
+  type        = string
+}
+variable "MAILGUN_domain" {
+  description = "Mailgun domain"
+  type        = string
+}
