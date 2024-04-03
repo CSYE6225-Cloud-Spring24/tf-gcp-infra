@@ -237,6 +237,11 @@ variable "privateinstance_name" {
 }
 
 variable "dnsname" {
+  description = "Name of the DNS Zone"
+  type        = string
+}
+
+variable "dnszonename" {
   description = "Name of the Domain"
   type        = string
 }
@@ -375,5 +380,241 @@ variable "MAILGUN_apiKey" {
 }
 variable "MAILGUN_domain" {
   description = "Mailgun domain"
+  type        = string
+}
+
+
+variable "Autoscaler_service_account_name" {
+  description = "Autoscaler Name of the Service Account"
+  type        = string
+}
+
+variable "Autoscaler_service_account_display_name" {
+  description = "Autoscaler Display Name of the Service Account"
+  type        = string
+}
+
+variable "regional_template" {
+  description = "VM Instance Template Name"
+  type        = string
+}
+
+variable "health_check" {
+  description = "Health Check Name"
+  type        = string
+}
+
+variable "instance_group_manager" {
+  description = "Instance Group Manager Name"
+  type        = string
+}
+
+variable "autoscaler" {
+  description = "Autoscalar Name"
+  type        = string
+}
+
+variable "max_replicas" {
+  description = "Max replicas in autoscaler"
+  type        = number
+}
+
+variable "min_replicas" {
+  description = "Min replicas in autoscaler"
+  type        = number
+}
+
+variable "cooldown_period" {
+  description = "Cool down period in autoscaler"
+  type        = number
+}
+
+variable "target" {
+  description = "CPU Utilization target in autoscalar"
+  type        = number
+}
+
+variable "lb_address" {
+  description = "Load Balancer Address"
+  type        = string
+}
+
+variable "https_proxy" {
+  description = "Https proxy name"
+  type        = string
+}
+
+variable "lb_url_map" {
+  description = "LB url map name"
+  type        = string
+}
+
+variable "ssl_certificate" {
+  description = "SSL certificate name"
+  type        = string
+}
+
+variable "forwardingrule_name" {
+  description = "LB Forwarding rule name"
+  type        = string
+}
+
+variable "forwardingrule_ip_protocol" {
+  description = "LB Forwarding rule IP Protocol"
+  type        = string
+}
+
+variable "forwardingrule_load_balancing_scheme" {
+  description = "LB Forwarding scheme"
+  type        = string
+}
+
+variable "forwardingrule_port_range" {
+  description = "LB Forwarding rule port range"
+  type        = string
+}
+
+variable "lb_backend_name" {
+  description = "LB Backend name"
+  type        = string
+}
+
+variable "lb_backend_protocol" {
+  description = "LB Backend Protocol"
+  type        = string
+}
+
+variable "lb_backend_port_name" {
+  description = "LB Backend port name"
+  type        = string
+}
+
+variable "lb_backend_balancing_mode" {
+  description = "LB Backend balancing mode"
+  type        = string
+}
+
+variable "lb_firewall_name" {
+  description = "LB Firewall rule name"
+  type        = string
+}
+
+variable "lb_firewall_protocol" {
+  description = "LB Firewall protocol"
+  type        = string
+}
+
+variable "lb_firewall_ports" {
+  description = "LB firewall ports"
+  type        = list(string)
+}
+
+variable "lb_firewall_source_ranges" {
+  description = "LB Firewall source ranges"
+  type        = list(string)
+}
+
+
+variable "vm_environment" {
+  description = "VM LABEL Environment"
+  type        = string
+}
+
+
+variable "vm_app" {
+  description = "VM Label App"
+  type        = string
+}
+
+variable "hc_firewall_name" {
+  description = "Health Check Firewall rule name"
+  type        = string
+}
+
+variable "hc_firewall_direction" {
+  description = "Health check firewall direction"
+  type        = string
+}
+
+variable "hc_firewall_source_ranges" {
+  description = "health check firewall source ranges"
+  type        = list(string)
+}
+
+variable "hc_firewall_protocol" {
+  description = "Health Check Firewall protocol"
+  type        = string
+}
+
+variable "hc_firewall_target_tags" {
+  description = "Health check firewall target tags"
+  type        = list(string)
+}
+
+variable "igm_namedport_name" {
+  description = "Managed Instance group Named port name"
+  type        = string
+}
+
+variable "igm_namedport_port" {
+  description = "Managed Instance group Named port protocol"
+  type        = number
+}
+
+variable "vm_target_size" {
+  description = "VM Target size"
+  type        = number
+}
+
+variable "igm_base_instance_name" {
+  description = "Instance group manager base instance name"
+  type        = string
+}
+
+variable "autohealing_initial_delay_sec" {
+  description = "Autohealing initial delay"
+  type        = number
+}
+
+variable "backend_timeout_sec" {
+  description = "Backend timeout"
+  type        = number
+}
+variable "backend_enable_cdn" {
+  description = "Backend Enable CDN"
+  type        = bool
+}
+variable "backend_connection_draining_timeout_sec" {
+  description = "Backend connection draining timeout"
+  type        = number
+}
+
+variable "hc_check_interval_sec" {
+  description = "health check interval"
+  type        = number
+}
+variable "hc_timeout_sec" {
+  description = "health check timeout"
+  type        = number
+}
+variable "hc_healthy_threshold" {
+  description = "health check healthy threshold"
+  type        = number
+}
+variable "hc_unhealthy_threshold" {
+  description = "health check unhealthy threshold"
+  type        = number
+}
+variable "hc_port" {
+  description = "health check port"
+  type        = number
+}
+variable "hc_request_path" {
+  description = "Health check request path"
+  type        = string
+}
+
+variable "igm_version_name" {
+  description = "MIG Version name"
   type        = string
 }
