@@ -44,12 +44,9 @@ resource "google_compute_firewall" "allowtraffic_applicationport" {
     ports    = [var.app_port]
   }
 
-  # source_ranges = [var.source_range]
   source_ranges = [google_compute_global_address.lb_ipv4_address.address]
 
   target_tags = var.vm_tag
-
-
 }
 
 resource "google_compute_firewall" "denytraffic_sshport" {
@@ -82,6 +79,100 @@ resource "random_id" "db_name_suffix" {
   byte_length = var.DB_Name_bytelength
 }
 
+data "google_storage_project_service_account" "gcs_account" {
+
+}
+
+resource "google_kms_crypto_key_iam_binding" "binding" {
+
+  crypto_key_id = google_kms_crypto_key.cloudstorage-key.id
+
+  role = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+
+  members = ["serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"]
+
+}
+
+
+resource "google_kms_key_ring" "cloud_key_ring" {
+
+  name = var.key_ring
+
+  location = var.region
+
+}
+
+resource "google_kms_crypto_key" "cloudsql-key" {
+
+  name = var.sql_key
+
+  key_ring = google_kms_key_ring.cloud_key_ring.id
+
+  rotation_period = var.rotation_period
+
+}
+
+resource "google_kms_crypto_key" "cloudstorage-key" {
+
+  name = var.storage_key
+
+  key_ring = google_kms_key_ring.cloud_key_ring.id
+
+  rotation_period = var.rotation_period
+
+}
+
+resource "google_kms_crypto_key" "vm_crypto_key" {
+
+  name = var.vm_key
+
+  key_ring = google_kms_key_ring.cloud_key_ring.id
+
+  rotation_period = var.rotation_period
+
+}
+
+
+
+resource "google_kms_crypto_key_iam_binding" "vm_crypto_key" {
+
+  provider = google-beta
+
+  crypto_key_id = google_kms_crypto_key.vm_crypto_key.id
+
+  role = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+
+
+  # members = ["serviceAccount:service-316066825735@compute-system.iam.gserviceaccount.com"]
+  members = [
+    "serviceAccount:${var.vm_key_service_account}",
+  ]
+
+}
+resource "google_project_service_identity" "instance" {
+
+  provider = google-beta
+
+  project = var.project_id
+
+  service = "sqladmin.googleapis.com"
+
+}
+
+resource "google_kms_crypto_key_iam_binding" "crypto_key_db" {
+
+  crypto_key_id = google_kms_crypto_key.cloudsql-key.id
+
+  role = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+
+  members = [
+
+    "serviceAccount:${google_project_service_identity.instance.email}",
+
+  ]
+
+}
+
 resource "google_sql_database_instance" "instance" {
   name                = "${var.privateinstance_name}-${random_id.db_name_suffix.hex}"
   region              = var.region
@@ -102,6 +193,8 @@ resource "google_sql_database_instance" "instance" {
       binary_log_enabled = var.backup_binary_log_enabled
     }
   }
+  // Add encryption_key_name parameter for CMEK
+  encryption_key_name = google_kms_crypto_key.cloudsql-key.id
 }
 
 resource "google_sql_database" "database" {
@@ -220,6 +313,10 @@ resource "google_project_iam_binding" "function_service_account_roles" {
 resource "google_storage_bucket" "function_code_bucket" {
   name     = var.cloudstorage_bucketname
   location = var.region
+  encryption {
+    default_kms_key_name = google_kms_crypto_key.cloudstorage-key.id
+  }
+  depends_on = [google_kms_crypto_key_iam_binding.binding]
 }
 
 resource "google_storage_bucket_object" "function_code_objects" {
@@ -317,7 +414,11 @@ resource "google_compute_region_instance_template" "regional_template" {
     boot         = true
     disk_size_gb = var.vm_disk_size_gb
     disk_type    = var.vm_disk_type
+    disk_encryption_key {
 
+      kms_key_self_link = google_kms_crypto_key.vm_crypto_key.id
+
+    }
   }
 
   # Define networking
@@ -345,13 +446,14 @@ echo "topicId=${google_pubsub_topic.pub_sub_topic.name}" >> /tmp/application.pro
 EOT
   service_account {
     email  = google_service_account.service_account.email
-    scopes = ["cloud-platform"]
+    scopes = [var.scope]
   }
 
   labels = {
     environment = var.vm_environment
     app         = var.vm_app
   }
+
 }
 
 resource "google_compute_http_health_check" "http_health_check" {
@@ -440,7 +542,6 @@ resource "google_compute_url_map" "default" {
 
 resource "google_compute_managed_ssl_certificate" "webapp_ssl_cert" {
   name = var.ssl_certificate
-
   managed {
     domains = [var.dnsname]
   }
@@ -459,45 +560,6 @@ resource "google_compute_backend_service" "webapp_backend" {
     group           = google_compute_region_instance_group_manager.webapp_igm.instance_group
     balancing_mode  = var.lb_backend_balancing_mode
     capacity_scaler = 1.0
-  }
-}
-
-resource "google_logging_metric" "igm_metric" {
-  name        = "igm-logs"
-  description = "Logs for instance group manager"
-
-  filter = "resource.type=\"gce_instance_group_manager\""
-
-  metric_descriptor {
-    metric_kind = "DELTA"
-    value_type  = "INT64"
-    unit        = "1"
-  }
-}
-
-resource "google_logging_metric" "autoscaler_metric" {
-  name        = "autoscaler-logs"
-  description = "Logs for autoscaler"
-
-  filter = "resource.type=\"gce_autoscaler\""
-
-  metric_descriptor {
-    metric_kind = "DELTA"
-    value_type  = "INT64"
-    unit        = "1"
-  }
-}
-
-resource "google_logging_metric" "backend_metric" {
-  name        = "backend-logs"
-  description = "Logs for load balancer backends"
-
-  filter = "resource.type=\"http_load_balancer\" AND resource.labels.backend_type=\"instance_group\""
-
-  metric_descriptor {
-    metric_kind = "DELTA"
-    value_type  = "INT64"
-    unit        = "1"
   }
 }
 
