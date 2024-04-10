@@ -51,3 +51,9 @@ Before you begin, ensure you have the following installed:
 > terraform destroy
 2. To revoke gcloud access:
 > gcloud auth application-default revoke
+
+
+# Cloud Key Management Service
+
+1. Enable Cloud KMS API in gcloud.
+2. Use Compute Engine Service account for VM Crypto Key Creation.
