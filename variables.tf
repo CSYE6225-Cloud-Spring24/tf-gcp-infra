@@ -618,3 +618,38 @@ variable "igm_version_name" {
   description = "MIG Version name"
   type        = string
 }
+
+variable "key_ring" {
+  description = "CKMS Key ring"
+  type        = string
+}
+
+variable "sql_key" {
+  description = "CKMS Sql Key"
+  type        = string
+}
+
+variable "rotation_period" {
+  description = "Rotation period"
+  type        = string
+}
+
+variable "storage_key" {
+  description = "CKMS Storage Key"
+  type        = string
+}
+
+variable "vm_key" {
+  description = "CKMS VM Key"
+  type        = string
+}
+
+variable "scope" {
+  description = "Service account scope"
+  type        = string
+}
+
+variable "vm_key_service_account" {
+  description = "VM Key Service account"
+  type        = string
+}
